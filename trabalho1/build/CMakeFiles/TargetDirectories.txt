@@ -1,0 +1,3 @@
+/home/bnero/ufrgs/fpi/trabalho1/build/CMakeFiles/FPI1.dir
+/home/bnero/ufrgs/fpi/trabalho1/build/CMakeFiles/edit_cache.dir
+/home/bnero/ufrgs/fpi/trabalho1/build/CMakeFiles/rebuild_cache.dir
