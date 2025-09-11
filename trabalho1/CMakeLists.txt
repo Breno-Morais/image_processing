@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.5)
 
 project( FPI1 )
 
+# Set the build type to Debug to include debugging symbols
+set(CMAKE_BUILD_TYPE Debug)
+
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 add_executable( FPI1 main.cpp )
