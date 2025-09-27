@@ -32,3 +32,5 @@ compile_commands.json
 
 # Other
 *.DS_Store
+*.pdf
+*.zip
