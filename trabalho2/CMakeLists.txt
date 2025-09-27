@@ -14,7 +14,13 @@ include_directories(
     ${GTKMM_INCLUDE_DIRS}
 )
 
-add_executable( FPI1 main.cpp interface/image_panel.cpp interface/main_window.cpp interface/control_panel.cpp interface/interface.cpp )
+file(GLOB SRC_FILES
+    "${CMAKE_SOURCE_DIR}/interface/*.cpp"
+    "${CMAKE_SOURCE_DIR}/image_processing/*.cpp"
+    "${CMAKE_SOURCE_DIR}/*.cpp"
+)
+
+add_executable( FPI1 main.cpp  ${SRC_FILES} )
 
 target_link_libraries( FPI1 
     ${OpenCV_LIBS} 
