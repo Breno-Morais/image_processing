@@ -93,3 +93,49 @@ void ImageProcessor::quantizeImageColored(cv::Mat& image, int n) {
 
     ImageProcessor::transformImage(image, quantizeColorChannel);
 }
+
+cv::Mat ImageProcessor::computeHistogram(const cv::Mat& image, int histSize) {
+    cv::Mat hist = cv::Mat::zeros(histSize, 1, CV_32S);
+    for(int row = 0; row < image.rows; ++row) {
+        for(int col = 0; col < image.cols; ++col) {
+            uchar pixelValue = image.at<uchar>(row, col);
+            hist.at<int>(pixelValue, 0)++;
+        }
+    }
+
+    // Normalize now
+    float maxVal = 0.0f;
+    for (int i = 0; i < histSize; i++) {
+        if (hist.at<float>(i, 0) > maxVal) {
+            maxVal = hist.at<float>(i, 0);
+        }
+    }
+
+    int histHeight = 400;
+    // Normalize values to [0, histHeight]
+    if (maxVal > 0) {
+        for (int i = 0; i < histSize; i++) {
+            hist.at<float>(i, 0) = (hist.at<float>(i, 0) * histHeight) / maxVal;
+        }
+    }
+
+    return hist;
+}
+
+cv::Mat ImageProcessor::createHistogramImage(const cv::Mat& hist, int histWidth, int histHeight) {
+    cv::Mat histImage(histHeight, histWidth, CV_8UC3, cv::Scalar(255, 255, 255));
+
+    int binWidth = cvRound((double)histWidth / hist.rows);
+
+    for (int i = 0; i < hist.rows; i++) {
+        int value = cvRound(hist.at<float>(i, 0));
+        cv::rectangle(histImage,
+            cv::Point(i * binWidth, histHeight),
+            cv::Point((i + 1) * binWidth, histHeight - value),
+            cv::Scalar(0, 0, 0), 
+            cv::FILLED
+        );
+    }
+
+    return histImage;
+}

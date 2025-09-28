@@ -26,7 +26,11 @@ ImagePanel::ImagePanel(const std::string& title, bool canLoad) {
 	label.set_text("No image loaded");
 }
 
-void ImagePanel::setImage(const cv::Mat& img) {
+void ImagePanel::setTitle(const std::string& title) {
+    set_label(title);
+}
+
+void ImagePanel::setImage(const cv::Mat& img, bool emitSignal) {
 	if(img.empty()) {
 		label.set_text("No image loaded");
 		image.clear();
@@ -39,7 +43,8 @@ void ImagePanel::setImage(const cv::Mat& img) {
 	label.set_text("");
     label.hide();
 
-    signalImageLoaded.emit(img.clone());
+    if(emitSignal)
+        signalImageLoaded.emit(img.clone());
 }
 
 Glib::RefPtr<Gdk::Pixbuf> ImagePanel::matToPixbuf(const cv::Mat& mat) {
@@ -110,7 +115,7 @@ void ImagePanel::loadImageFromDialog() {
             if (file) {
                 auto path = file->get_path();
                 cv::Mat img = cv::imread(path);
-                setImage(img);
+                setImage(img, true);
             }
         }
         delete dialog;

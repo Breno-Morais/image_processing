@@ -54,6 +54,28 @@ ControlPanel::ControlPanel() {
     btnQuantColor.signal_clicked().connect([this]() {
         signalQuantColor.emit(spinQuantColor.get_value_as_int());
     });
+
+    // Histogram
+    box.append(btnHist);
+    btnHist.signal_clicked().connect([this]() {
+        signalHist.emit();
+    });
+
+    box.append(btnProcHist);
+    btnProcHist.signal_clicked().connect([this]() {
+        signalProcessedHist.emit();
+    });
+
+    // Testing
+    box.append(btnSm);
+    btnSm.signal_clicked().connect([this]() {
+        signalCurrent.emit();
+    });
+
+    box.append(btnRestart);
+    btnRestart.signal_clicked().connect([this]() {
+        signalRestart.emit();
+    });
 }
 
 
@@ -62,3 +84,8 @@ sigc::signal<void (bool)> ControlPanel::signal_apply_mirror() { return signalMir
 sigc::signal<void (float)> ControlPanel::signal_apply_contrast() { return signalContrast; }
 sigc::signal<void (int)> ControlPanel::signal_apply_quantize_gray() { return signalQuantGray; }
 sigc::signal<void (int)> ControlPanel::signal_apply_quantize_color() { return signalQuantColor; }
+sigc::signal<void (void)> ControlPanel::signal_create_histogram() { return signalHist; }
+sigc::signal<void (void)> ControlPanel::signal_create_processed_histogram() { return signalProcessedHist; }
+sigc::signal<void (void)> ControlPanel::signal_restart_image() { return signalRestart; }
+
+sigc::signal<void (void)> ControlPanel::signal_apply_current() { return signalCurrent; }

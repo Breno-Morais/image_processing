@@ -41,6 +41,10 @@ class ImageProcessor {
         static void quantizeImage(cv::Mat& image, int n); 
 
         static void quantizeImageColored(cv::Mat& image, int n);
+
+        // Histogram
+        static cv::Mat computeHistogram(const cv::Mat& image, int histSize = 256);
+        static cv::Mat createHistogramImage(const cv::Mat& hist, int histWidth, int histHeight);
 };
 
 #endif // IMAGE_PROCESSING_H

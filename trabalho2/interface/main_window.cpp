@@ -17,43 +17,93 @@ MainWindow::MainWindow() {
 
 	leftImagePanel.signal_image_loaded().connect([this](cv::Mat img) {
 		originalImage = img; // store original
-		processedImage = img;
+		processedImage = img.clone();
 		rightImagePanel.setImage(img); // show same initially
 	});
 
 	controlPanel.signal_apply_mirror().connect([this](bool horizontal) {
-
-		updateProcessedImage();
 		ImageProcessor::mirrorImage(processedImage, horizontal);
-		rightImagePanel.setImage(processedImage);
+		
+		setOriginalImage(leftImagePanel);
+		setProcessedImage(rightImagePanel);
 	});
 
 	controlPanel.signal_apply_contrast().connect([this](float contrastFactor) {
-		updateProcessedImage();
 		ImageProcessor::transformImage(processedImage, [contrastFactor](cv::Vec3b& pixel) {
 			ImageProcessor::contrastEnhancement(pixel, contrastFactor);
 		});
-		rightImagePanel.setImage(processedImage);
+		
+		setOriginalImage(leftImagePanel);
+		setProcessedImage(rightImagePanel);
 	});
 
 	controlPanel.signal_apply_grayscale().connect([this]() {
-		updateProcessedImage();
 		ImageProcessor::transformImage(processedImage, ImageProcessor::toGrayScale);
-		rightImagePanel.setImage(processedImage);
+		
+		setOriginalImage(leftImagePanel);
+		setProcessedImage(rightImagePanel);
 	});
 
 	controlPanel.signal_apply_quantize_gray().connect([this](int levels) {
-		updateProcessedImage();
 		ImageProcessor::quantizeImage(processedImage, levels);
-		rightImagePanel.setImage(processedImage);
+		
+		setOriginalImage(leftImagePanel);
+		setProcessedImage(rightImagePanel);
 	});
 
 	controlPanel.signal_apply_quantize_color().connect([this](int levels) {
-		updateProcessedImage();
 		ImageProcessor::quantizeImageColored(processedImage, levels);
-		rightImagePanel.setImage(processedImage);
+		
+		setOriginalImage(leftImagePanel);
+		setProcessedImage(rightImagePanel);
 	});
 
+	controlPanel.signal_create_histogram().connect([this]() {
+		cv::Mat dummy = originalImage.clone();
+		ImageProcessor::transformImage(dummy, ImageProcessor::toGrayScale);
+		cv::Mat hist = ImageProcessor::computeHistogram(dummy);
+
+		int hist_width = 512;
+		int hist_height = 400;
+		cv::Mat histImage = ImageProcessor::createHistogramImage(hist, hist_width, hist_height);
+		
+		setOriginalImage(leftImagePanel);
+
+		rightImagePanel.setTitle("Histogram");
+		rightImagePanel.setImage(histImage);
+	});
+
+	controlPanel.signal_create_processed_histogram().connect([this]() {
+		cv::Mat dummy = processedImage.clone();
+		ImageProcessor::transformImage(dummy, ImageProcessor::toGrayScale);
+		cv::Mat hist = ImageProcessor::computeHistogram(dummy);
+
+		int hist_width = 512;
+		int hist_height = 400;
+		cv::Mat histImage = ImageProcessor::createHistogramImage(hist, hist_width, hist_height);
+		
+		setProcessedImage(leftImagePanel);
+
+		rightImagePanel.setTitle("Histogram");
+		rightImagePanel.setImage(histImage);
+	});
+
+	controlPanel.signal_restart_image().connect([this]() {
+		processedImage = originalImage.clone();
+		
+		setOriginalImage(leftImagePanel);
+		setProcessedImage(rightImagePanel);
+	});
+}
+
+void MainWindow::setOriginalImage(ImagePanel& panel) {
+	panel.setTitle("Original Image");
+	panel.setImage(originalImage);
+}
+
+void MainWindow::setProcessedImage(ImagePanel& panel) {
+	panel.setTitle("Processed Image");
+	panel.setImage(processedImage);
 }
 
 void MainWindow::updateProcessedImage() {
