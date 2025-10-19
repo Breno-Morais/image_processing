@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project( FPI1 )
+project( FPI2 )
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Debug)
@@ -20,18 +20,18 @@ file(GLOB SRC_FILES
     "${CMAKE_SOURCE_DIR}/*.cpp"
 )
 
-add_executable( FPI1 main.cpp  ${SRC_FILES} )
+add_executable( FPI2 main.cpp  ${SRC_FILES} )
 
-target_link_libraries( FPI1 
+target_link_libraries( FPI2 
     ${OpenCV_LIBS} 
     ${GTKMM_LIBRARIES}
 )
 
-target_compile_options(FPI1 PRIVATE ${GTKMM_CFLAGS_OTHER})
+target_compile_options(FPI2 PRIVATE ${GTKMM_CFLAGS_OTHER})
 
 # cmake_minimum_required(VERSION 3.5)
 
-# project( FPI1 )
+# project( FPI2 )
 
 # # Set the build type to Debug to include debugging symbols
 # set(CMAKE_BUILD_TYPE Debug)
@@ -49,5 +49,5 @@ target_compile_options(FPI1 PRIVATE ${GTKMM_CFLAGS_OTHER})
 # string(REPLACE ";" " -I" FLAGS "${FLAGS}")
 # set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${GTK3_FLAGS} ${FLAGS})
 
-# add_executable( FPI1 main.cpp )
-# target_link_libraries( FPI1 ${LIBRARIES} )
+# add_executable( FPI2 main.cpp )
+# target_link_libraries( FPI2 ${LIBRARIES} )

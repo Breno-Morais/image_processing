@@ -6,6 +6,7 @@
 
 ImagePanel::ImagePanel(const std::string& title, bool canLoad) {
 	set_label(title);
+    set_label_align(0.5f);
 	set_margin(5);
 
 	box.set_orientation(Gtk::Orientation::VERTICAL);
@@ -22,8 +23,14 @@ ImagePanel::ImagePanel(const std::string& title, bool canLoad) {
 
     image.set_hexpand(true);
     image.set_vexpand(true);
+    image.set_valign(Gtk::Align::CENTER);
+    image.set_halign(Gtk::Align::CENTER);
 
 	label.set_text("No image loaded");
+    label.set_vexpand(true);
+    label.set_hexpand(true);
+    label.set_valign(Gtk::Align::CENTER);
+    label.set_halign(Gtk::Align::CENTER);
 }
 
 void ImagePanel::setTitle(const std::string& title) {
@@ -40,6 +47,9 @@ void ImagePanel::setImage(const cv::Mat& img, bool emitSignal) {
 	auto pixbuf = matToPixbuf(img);
     // pixbuf = pixbuf->scale_simple(targetWidth, targetHeight, Gdk::InterpType::BILINEAR);
 	image.set(pixbuf);
+    image.set_size_request(pixbuf->get_width(), pixbuf->get_height());
+    image.set_halign(Gtk::Align::CENTER);
+    image.set_valign(Gtk::Align::CENTER);
 	label.set_text("");
     label.hide();
 
@@ -122,8 +132,4 @@ void ImagePanel::loadImageFromDialog() {
     });
 
     dialog->show(); // present the dialog
-}
-
-sigc::signal<void (cv::Mat)> ImagePanel::signal_image_loaded() {
-    return signalImageLoaded;
 }
