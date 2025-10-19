@@ -1,4 +1,4 @@
-#include "interface.h"
+#include "../interface.h"
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/filechooserdialog.h>
 #include <giomm/file.h>
