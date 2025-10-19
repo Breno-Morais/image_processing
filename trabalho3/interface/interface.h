@@ -1,37 +1,23 @@
 #ifndef FPI_INTERFACE_H
 #define FPI_INTERFACE_H
 
-#include "./image/control_panel.h"
-#include "./image/image_panel.h"
-
-#include <gtkmm.h>
+#include <gtk/gtk.h>
 #include <opencv2/opencv.hpp>
 
-#include <map>
+#include "../core/video_processor.h"
 
-class MainWindow: public Gtk::Window {
+class GtkInterface {
 	public:
-		MainWindow();
+		GtkInterface(VideoProcessor& processor);
+		void run();
 
-	protected:
-		Gtk::Box mainBox{Gtk::Orientation::HORIZONTAL};
+	private:
+		static void on_brightness_changed(GtkRange* range, gpointer user_data);
+		static void on_contrast_changed(GtkRange* range, gpointer user_data);
+		static void on_blur_changed(GtkRange* range, gpointer user_data);
+		static void on_resize_changed(GtkRange* range, gpointer user_data);
 
-		Gtk::Box leftBox{Gtk::Orientation::VERTICAL};
-		ImagePanel topLeftImagePanel{"Original Image", true};
-		ImagePanel topRightImagePanel{"Processed Image", false};
-		
-		ControlPanel controlPanel;
-
-		Gtk::Box rightBox{Gtk::Orientation::VERTICAL};
-		ImagePanel bottomLeftImagePanel{"", false};
-		ImagePanel bottomRightImagePanel{"", false};
-
-		cv::Mat originalImage;
-		cv::Mat processedImage;
-
-		void setOriginalImage(ImagePanel& panel);
-		void setProcessedImage(ImagePanel& panel);
-		void updateProcessedImage();
+		VideoProcessor& processor;
 };
 
 #endif //FPI_INTERFACE_H

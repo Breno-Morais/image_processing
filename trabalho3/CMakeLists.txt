@@ -7,7 +7,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 find_package( OpenCV REQUIRED )
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTKMM REQUIRED gtkmm-4.0)
+pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 
 include_directories( 
     ${OpenCV_INCLUDE_DIRS} 
@@ -15,9 +15,8 @@ include_directories(
 )
 
 file(GLOB SRC_FILES
-    "${CMAKE_SOURCE_DIR}/interface/image/*.cpp"
-    "${CMAKE_SOURCE_DIR}/interface/video/*.cpp"
     "${CMAKE_SOURCE_DIR}/interface/*.cpp"
+    "${CMAKE_SOURCE_DIR}/core/*.cpp"
     "${CMAKE_SOURCE_DIR}/image_processing/*.cpp"
     "${CMAKE_SOURCE_DIR}/*.cpp"
 )
@@ -27,6 +26,7 @@ add_executable( FPI3 main.cpp  ${SRC_FILES} )
 target_link_libraries( FPI3 
     ${OpenCV_LIBS} 
     ${GTKMM_LIBRARIES}
+    pthread
 )
 
 target_compile_options(FPI3 PRIVATE ${GTKMM_CFLAGS_OTHER})

@@ -1,37 +1,35 @@
-// #include <iostream>
-// #include <opencv2/opencv.hpp>
-// #include <chrono>
-// #include <cmath>
-
-// #include "interface/interface.h"
-// #include <gtkmm/application.h>
-// #include "image_processing/image_processing.h"
-
-// int main(int argc, char** argv) {
-//     auto app = Gtk::Application::create("org.gtkmm.example");
-
-//     return app->make_window_and_run<MainWindow>(argc, argv);
-// }
-
 #include <opencv2/opencv.hpp>
+#include <iostream>
+#include "core/video_processor.h"
+#include "interface/command_interface.h"
+#include "interface/interface.h"
+
 using namespace cv;
 
 int main(int argc, char** argv) {
-    int camera = -1;
-    VideoCapture cap;
-    // open the default camera, use something different from 0 otherwise;
-    // Check VideoCapture documentation.
-    if(!cap.open(camera))
-        return 0;
+    VideoProcessor processor;
 
-    for(;;) {
-        Mat frame;
-        cap >> frame;
-        if( frame.empty() ) break; // end of video stream
-        imshow("This is you, smile! :)", frame);
-        if( waitKey(1) == 27 ) break; // stop capturing by pressing ESC
+    if(!processor.initializeCamera(-1)) {
+        std::cerr << "Error: could not open camera. \n";
+        return 1;
     }
 
-    cap.release(); // release the VideoCapture object
+    CommandInterface commands(processor);
+    GtkInterface ui(processor);
+    ui.run();
+
+    commands.printPrompt();
+
+    while(true) {
+        processor.captureFrame();
+        processor.applyCurrentEffects();
+        processor.displayFrames();
+
+        char key = cv::waitKey(1);
+        if (key == 'q' || key == 27) break;  // quit
+        commands.handleInput(key);
+    }
+
+    processor.release();
     return 0;
 }
