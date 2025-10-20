@@ -27,7 +27,7 @@ void CommandInterface::handleInput(char key) {
         case '5': processor.toggleEffect(VideoProcessor::CONTRAST); break;
         case '6': processor.toggleEffect(VideoProcessor::NEGATIVE); break;
         case '7': processor.toggleEffect(VideoProcessor::GRAYSCALE); break;
-        case '8': processor.toggleEffect(VideoProcessor::RESIZE_HALF); break;
+        case '8': processor.toggleEffect(VideoProcessor::RESIZE); break;
         case '9': processor.toggleEffect(VideoProcessor::ROTATE_90); break;
         case 'm': processor.toggleEffect(VideoProcessor::MIRROR); break;
         case 'r': processor.toggleRecording(); break;

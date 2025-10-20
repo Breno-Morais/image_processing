@@ -37,13 +37,6 @@ void VideoProcessor::applyCurrentEffects() {
         GaussianBlur(processed, processed, Size(k, k), 0);
     }
 
-    // --- Canny Edge Detection ---
-    if (effects[CANNY]) {
-        Mat edges;
-        Canny(processed, edges, 50, 150);
-        cvtColor(edges, processed, COLOR_GRAY2BGR);
-    }
-
     // --- Sobel Gradient ---
     if (effects[SOBEL]) {
         Mat gray;
@@ -65,8 +58,12 @@ void VideoProcessor::applyCurrentEffects() {
     }
 
     // --- Brightness / Contrast ---
-    if (effects[BRIGHTNESS] || effects[CONTRAST]) {
-        processed.convertTo(processed, -1, alpha, beta);
+    if (effects[BRIGHTNESS]) {
+        processed.convertTo(processed, -1, 1, beta);
+    }
+
+    if (effects[CONTRAST]) {
+        processed.convertTo(processed, -1, alpha, 0);
     }
 
     // --- Negative ---
@@ -80,9 +77,18 @@ void VideoProcessor::applyCurrentEffects() {
         cvtColor(processed, processed, COLOR_GRAY2BGR);
     }
 
+    // --- Canny Edge Detection ---
+    if (effects[CANNY]) {
+        Mat edges;
+        Canny(processed, edges, 50, 150);
+        cvtColor(edges, processed, COLOR_GRAY2BGR);
+    }
+
+
     // --- Resize ---
-    if (effects[RESIZE_HALF]) {
-        resize(processed, processed, Size(), 0.5, 0.5, INTER_LINEAR);
+    if (effects[RESIZE]) {
+        double scale = resizePercent / 100.0;
+        resize(processed, processed, Size(), scale, scale, INTER_LINEAR);
     }
 
     // --- Rotate (90 degrees) ---
@@ -163,9 +169,26 @@ std::string VideoProcessor::getEffectName(EffectType effect) const {
         case CONTRAST: return "Contrast";
         case NEGATIVE: return "Negative";
         case GRAYSCALE: return "Grayscale";
-        case RESIZE_HALF: return "Resize (1/2)";
+        case RESIZE: return "Resize (1/2)";
         case ROTATE_90: return "Rotate 90°";
         case MIRROR: return "Mirror";
         default: return "Unknown";
     }
+}
+
+void VideoProcessor::setBlurSize(int k) {
+    if (k <= 0) k = 1;
+    blurSize = (k % 2 == 0) ? k + 1 : k;
+}
+
+void VideoProcessor::setBrightness(int b) {
+    beta = b - 100; // map [0,200] para [-100,100]
+}
+
+void VideoProcessor::setContrast(double a) {
+    alpha = a / 50.0; // map [0,100] para [0.0, 2.0]
+}
+
+void VideoProcessor::setResizePercent(int p) {
+    resizePercent = std::max(10, p); // avoid 0
 }

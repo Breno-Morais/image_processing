@@ -14,7 +14,7 @@ class VideoProcessor {
             CONTRAST,
             NEGATIVE,
             GRAYSCALE,
-            RESIZE_HALF,
+            RESIZE,
             ROTATE_90,
             MIRROR,
             NUM_EFFECTS
@@ -29,6 +29,11 @@ class VideoProcessor {
         void adjustParameter(std::string name, int value);
         void release();
 
+        void setBlurSize(int k);
+        void setBrightness(int b);   // -100 to 100
+        void setContrast(double a);  // 0.0 to 3.0
+        void setResizePercent(int p);
+
     private:
         std::string getEffectName(EffectType effect) const;
 
@@ -39,6 +44,7 @@ class VideoProcessor {
         int blurSize = 3;
         double alpha = 1.0, beta = 0.0; // contrast and brightness
         bool recording = false;
+        int resizePercent = 100;
 };
 
 #endif /* VIDEO_PROC */
