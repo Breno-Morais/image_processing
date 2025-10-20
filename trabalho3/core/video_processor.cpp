@@ -1,7 +1,5 @@
 #include "video_processor.h"
 
-#include "../image_processing/image_processing.h"
-
 using namespace cv;
 
 bool VideoProcessor::initializeCamera(int cameraIndex) {
@@ -57,18 +55,21 @@ void VideoProcessor::applyCurrentEffects() {
         cvtColor(grad, processed, COLOR_GRAY2BGR);  // Always safe
     }
 
-    // --- Brightness / Contrast ---
+    // --- Brightness ---
     if (effects[BRIGHTNESS]) {
         processed.convertTo(processed, -1, 1, beta);
     }
 
+    // --- Contrast ---
     if (effects[CONTRAST]) {
         processed.convertTo(processed, -1, alpha, 0);
     }
 
     // --- Negative ---
     if (effects[NEGATIVE]) {
-        processed = Scalar::all(255) - processed;
+        // processed = Scalar::all(255) - processed;
+        processed.convertTo(processed, -1, -1, 255);
+
     }
 
     // --- Grayscale ---
@@ -84,6 +85,10 @@ void VideoProcessor::applyCurrentEffects() {
         cvtColor(edges, processed, COLOR_GRAY2BGR);
     }
 
+    // --- Recording ---
+    if (recording && writer.isOpened()) {
+        writer.write(processed);
+    }
 
     // --- Resize ---
     if (effects[RESIZE]) {
@@ -96,15 +101,15 @@ void VideoProcessor::applyCurrentEffects() {
         rotate(processed, processed, ROTATE_90_CLOCKWISE);
     }
 
-    // --- Mirror (horizontal + vertical) ---
-    if (effects[MIRROR]) {
-        flip(processed, processed, -1);
+    // --- Mirror (horizontal) ---
+    if (effects[MIRROR_H]) {
+        flip(processed, processed, 1);
     }
 
-    // --- Recording ---
-    if (recording && writer.isOpened()) {
-        writer.write(processed);
-    }
+    // --- Mirror (vertical) ---
+    if (effects[MIRROR_V]) {
+        flip(processed, processed, 0);
+    }    
 }
 
 void VideoProcessor::displayFrames() {
@@ -171,7 +176,8 @@ std::string VideoProcessor::getEffectName(EffectType effect) const {
         case GRAYSCALE: return "Grayscale";
         case RESIZE: return "Resize (1/2)";
         case ROTATE_90: return "Rotate 90°";
-        case MIRROR: return "Mirror";
+        case MIRROR_H: return "Mirror Horizontal";
+        case MIRROR_V: return "Mirror Vertical";
         default: return "Unknown";
     }
 }

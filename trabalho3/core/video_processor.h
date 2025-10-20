@@ -16,7 +16,8 @@ class VideoProcessor {
             GRAYSCALE,
             RESIZE,
             ROTATE_90,
-            MIRROR,
+            MIRROR_H,
+            MIRROR_V,
             NUM_EFFECTS
         };
 

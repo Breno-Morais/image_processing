@@ -13,7 +13,8 @@ void CommandInterface::printPrompt() {
               << " 7 - Grayscale\n"
               << " 8 - Resize\n"
               << " 9 - Rotate\n"
-              << " m - Mirror\n"
+              << " h - Mirror Horizontal\n"
+              << " v - Mirror Vertical\n"
               << " r - Start/Stop Recording\n"
               << " q - Quit\n";
 }
@@ -29,7 +30,8 @@ void CommandInterface::handleInput(char key) {
         case '7': processor.toggleEffect(VideoProcessor::GRAYSCALE); break;
         case '8': processor.toggleEffect(VideoProcessor::RESIZE); break;
         case '9': processor.toggleEffect(VideoProcessor::ROTATE_90); break;
-        case 'm': processor.toggleEffect(VideoProcessor::MIRROR); break;
+        case 'h': processor.toggleEffect(VideoProcessor::MIRROR_H); break;
+        case 'v': processor.toggleEffect(VideoProcessor::MIRROR_V); break;
         case 'r': processor.toggleRecording(); break;
         default: break;
     }

@@ -17,7 +17,6 @@ include_directories(
 file(GLOB SRC_FILES
     "${CMAKE_SOURCE_DIR}/interface/*.cpp"
     "${CMAKE_SOURCE_DIR}/core/*.cpp"
-    "${CMAKE_SOURCE_DIR}/image_processing/*.cpp"
     "${CMAKE_SOURCE_DIR}/*.cpp"
 )
 
